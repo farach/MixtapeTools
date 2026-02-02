@@ -178,11 +178,11 @@ Re-run the audits and assess whether concerns were adequately addressed."
 The personas in this folder exist because:
 
 1. **AI makes confident mistakes** — Subtle bugs that compile, pass basic checks, but produce wrong results
-2. **Cross-language replication catches what single-language review misses** — Hallucinations are orthogonal
+2. **Cross-language replication catches what single-language review misses** — Hallucination errors are orthogonal *across* languages, so independent implementations expose errors that same-language review would miss
 3. **Creators can't see their own blind spots** — You rationalize your own choices
-4. **Academic peer review works** — The revise & resubmit process catches real problems
+4. **Academic peer review works** — The revise & resubmit process catches real problems, and as a metaphor helps the researcher better understand the function of the persona and the tasks being performed
 5. **Formal process > informal vibes** — Checklists beat intuition
-6. **Replication scripts are permanent artifacts** — They prove independent verification occurred
+6. **Replication scripts are permanent artifacts** — They prove independent verification occurred and leave a fossilized record of progress that all future Claude sessions can review
 
 ---
 
