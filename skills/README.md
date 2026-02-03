@@ -1,8 +1,12 @@
 # Skills for Claude Code
 
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is a command-line tool that lets you work with Claude directly in your terminal. **Skills** are pre-written workflows that Claude Code can execute — think of them as macros or recipes. You type a slash command (like `/split-pdf`), and Claude follows a detailed set of instructions to carry out a complex, multi-step task automatically.
+## What is this?
 
-This directory documents the skills included in this repo. The actual skill files that Claude reads live in `.claude/skills/` (a hidden directory that doesn't show up on GitHub). This visible `skills/` directory exists so you can browse what's available, see examples of real output, and learn how to install them in your own projects.
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) is a way to work with Claude directly on your computer — you type instructions, and Claude reads files, writes code, searches the web, and carries out tasks for you. If you've used Claude in the browser, Claude Code is the version that can actually *do things* on your machine.
+
+**Skills** are pre-written workflows for Claude Code. Think of them as recipes. You type a short command (like `/split-pdf`), and Claude follows a detailed set of instructions to carry out a complex, multi-step task automatically. Without the skill, you'd have to explain every step yourself each time. With the skill, it's one command.
+
+This directory contains documentation, methodology, and example output for the skills in this repo. Browse what's available below.
 
 ---
 
@@ -10,59 +14,61 @@ This directory documents the skills included in this repo. The actual skill file
 
 | Skill | Command | What it does |
 |-------|---------|--------------|
-| [**Split-PDF**](split-pdf/) | `/split-pdf` | You give Claude a paper (local file or search query). It downloads the PDF, saves it locally, splits it into 4-page chunks, reads them in small batches, and writes detailed structured notes — preserving the original PDF throughout. [See the full walkthrough and example output →](split-pdf/) |
+| [**Split-PDF**](split-pdf/) | `/split-pdf` | You give Claude a paper (a local file or a search query like "Gentzkow Shapiro 2014 competition newspapers"). It finds and downloads the PDF, saves it locally, splits it into small chunks, reads them carefully in batches, and writes detailed structured notes — extracting research questions, methods, data sources, findings, and more. The original PDF is always preserved. [See the full walkthrough with example output →](split-pdf/) |
 
 ---
 
-## How to Use These Skills in Your Own Projects
+## How to Use These Skills
 
-1. **Clone this repo** (or just copy the `.claude/skills/` directory)
+**Prerequisites:** You need [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed. If you haven't set it up yet, follow Anthropic's installation guide first.
+
+**Then:**
+
+1. **Clone this repo** (or just copy the `.claude/skills/` directory — that's the hidden folder where the actual skill instructions live)
 2. Place the `.claude/skills/` folder in your project root
-3. Open Claude Code in that project
-4. Type the slash command (e.g., `/split-pdf "Gentzkow Shapiro 2014 competition newspapers"`)
+3. Open Claude Code in that project directory
+4. Type the slash command: `/split-pdf "Gentzkow Shapiro 2014 competition newspapers"`
 
-Claude Code automatically discovers skills in `.claude/skills/`. No configuration needed beyond having the files in the right place.
+That's it. Claude Code automatically discovers skills in `.claude/skills/` and makes them available as slash commands. No configuration needed.
+
+---
+
+## Why are there two directories?
+
+You might notice this repo has both a visible `skills/` folder (what you're reading now) and a hidden `.claude/skills/` folder. Here's why:
+
+- **`.claude/skills/`** contains the actual skill files — the instructions Claude follows when you invoke a command. These are written *for Claude*, in a format it understands (step-by-step imperatives with metadata). This directory is hidden on GitHub because it starts with a dot.
+
+- **`skills/`** (this directory) contains documentation *for you* — what each skill does, why it works, how to use it, and examples of real output. It's the human-readable companion to the machine-readable instructions.
+
+When you clone the repo, you get both. Claude reads its instructions from `.claude/skills/`. You read the documentation here in `skills/`.
 
 ---
 
 ## How Skills Work (Under the Hood)
 
-A skill is a markdown file at `.claude/skills/<name>/SKILL.md` with YAML frontmatter. The frontmatter tells Claude Code the skill's name, what tools it's allowed to use, and a hint for what arguments the user should provide. The body of the file is imperative instructions — a prompt that Claude follows step by step when the skill is invoked.
+Each skill is a markdown file at `.claude/skills/<name>/SKILL.md`. It has a small header (metadata) that tells Claude Code the skill's name and what tools it's allowed to use, followed by step-by-step instructions that Claude follows when you invoke the command.
 
-```yaml
----
-name: your-skill-name
-description: What the skill does (one sentence)
-allowed-tools: Bash(python*), Read, Write
-argument-hint: [what-the-user-provides]
----
+```
+.claude/skills/
+└── split-pdf/
+    ├── SKILL.md           # The instructions Claude follows
+    └── methodology.md     # Why this approach works (for humans)
 
-# Instructions for Claude
-
-Step 1: Do this.
-Step 2: Then do that.
-Step 3: Write the output here.
+skills/
+└── split-pdf/
+    └── README.md          # Full documentation and examples (for humans)
 ```
 
-The SKILL.md is written *for Claude*, not for humans. That's why this `skills/` directory exists — to provide human-readable documentation, methodology explanations, and example output for each skill.
+If you're curious what the actual instructions look like, you can read the [SKILL.md file directly](../.claude/skills/split-pdf/SKILL.md) — but you don't need to understand it to use the skill.
 
 ---
 
 ## Adding New Skills
 
-To create a new skill:
+To create your own skill:
 
-1. Add a directory under `.claude/skills/` with a `SKILL.md` file
-2. Optionally add a matching directory under `skills/` with a human-readable `README.md`
+1. Create a directory under `.claude/skills/` with a `SKILL.md` file
+2. Optionally create a matching directory under `skills/` with a `README.md` for documentation
 
-```
-.claude/skills/
-└── your-skill-name/
-    └── SKILL.md              # Instructions Claude follows
-
-skills/
-└── your-skill-name/
-    └── README.md             # Documentation for humans
-```
-
-If you develop a useful skill, PRs are welcome.
+If you develop a useful skill for academic research, PRs are welcome.
