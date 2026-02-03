@@ -13,7 +13,7 @@ argument-hint: [pdf-path-or-search-query]
 
 The user wants you to read, review, or summarize an academic paper. The input is either:
 - A file path to a local PDF (e.g., `./articles/smith_2024.pdf`)
-- A search query or paper title (e.g., `"Gruber 1994 health insurance"`)
+- A search query or paper title (e.g., `"Gentzkow Shapiro Sinkinson 2014 competition newspapers"`)
 
 **Important:** You cannot search for a paper you don't know exists. The user MUST provide either a file path or a specific search query — an author name, a title, keywords, a year, or some combination that identifies the paper. If the user invokes this skill without specifying what paper to read, ask them. Do not guess.
 

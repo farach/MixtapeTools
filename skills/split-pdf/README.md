@@ -4,7 +4,13 @@
 
 ---
 
-## The Problem
+## What This Skill Does
+
+You give Claude a paper — either a local PDF file or a search query like "Gentzkow Shapiro 2014 competition newspapers" — and it does the rest. It finds the paper online and downloads it (or uses your local file), saves it to an `articles/` directory, splits it into 4-page chunks using PyPDF2, then reads those chunks in small batches (3 at a time, ~12 pages), pausing between each batch for your review. As it reads, it writes structured notes into a `notes.md` file, extracting specific information across 8 dimensions: research question, audience, method, data, statistical methods, findings, contributions, and replication feasibility. By the end, you have the original PDF preserved in `articles/`, the split files in a subdirectory, and a detailed set of reading notes — all from a single `/split-pdf` command.
+
+---
+
+## Why It Exists
 
 Claude Code can read PDFs, but long academic papers cause two failures:
 
@@ -34,7 +40,7 @@ Split the PDF into 4-page chunks, read 3 chunks at a time (~12 pages), and write
 
 ```
 /split-pdf path/to/paper.pdf
-/split-pdf "Gruber 1994 health insurance"
+/split-pdf "Gentzkow Shapiro Sinkinson 2014 competition newspapers"
 ```
 
 **You must tell Claude what paper to read.** Claude cannot webcrawl for a paper it doesn't know exists. Provide either a local file path or a search query specific enough to find the paper — an author name, title, keywords, year, or some combination. If you just type `/split-pdf` with nothing else, Claude will ask you what you're looking for.
