@@ -102,7 +102,7 @@ As you read, collect information along these dimensions and write them into `not
 7. **Contributions** — What is learned from this exercise that we didn't know before?
 8. **Replication feasibility** — Is the data publicly available? Is there a replication archive? A data appendix? URLs for the underlying data?
 
-These questions extract what a researcher needs to **build on or replicate** the work. This is not "summarize the paper" — it is "tell me exactly what they did and how."
+These questions extract what a researcher needs to **build on or replicate** the work — a structured extraction more detailed and specific than a typical summary.
 
 ## The Notes File
 

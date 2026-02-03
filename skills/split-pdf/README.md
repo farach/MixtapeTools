@@ -41,7 +41,7 @@ Split the PDF into 4-page chunks, read 3 chunks at a time (~12 pages), and write
 
 ### What Gets Extracted (8 Dimensions)
 
-The skill doesn't produce a summary. It produces a **structured extraction** — the information a researcher needs to build on or replicate the work:
+The skill produces a **structured extraction** — more detailed and specific than a typical summary, organized around the dimensions a researcher needs to build on or replicate the work:
 
 1. **Research question** — What is the paper asking and why does it matter?
 2. **Audience** — Which sub-community of researchers cares about this?
@@ -138,7 +138,7 @@ After each round, Claude paused and asked whether to continue. The `notes.md` fi
 
 ### What the notes look like
 
-Open [`notes.md`](gentskow_shapiro_competition/notes.md) to see the full output. It is not a summary — it is a structured extraction across all 8 dimensions, including specific coefficient estimates (e.g., β̄ = 0.81 vs. β̲ = −0.29), standard errors, equation numbers, exact data sources with where they were obtained, sample sizes, and a detailed assessment of replication feasibility. The notes run to ~320 lines because the paper is methodologically dense. A simpler empirical paper would produce shorter notes.
+Open [`notes.md`](gentskow_shapiro_competition/notes.md) to see the full output. It's a structured extraction across all 8 dimensions — more detailed than a typical summary — including specific coefficient estimates (e.g., β̄ = 0.81 vs. β̲ = −0.29), standard errors, equation numbers, exact data sources with where they were obtained, sample sizes, and a detailed assessment of replication feasibility. The notes run to ~320 lines because the paper is methodologically dense. A simpler empirical paper would produce shorter notes.
 
 ---
 
