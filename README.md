@@ -132,7 +132,7 @@ A Claude Code **command** — invoke with `/compiledeck` — that embeds the ful
 | Command | Description |
 |---------|-------------|
 | `/compiletex [file.tex]` | Compile any LaTeX file and report errors/warnings. Aims for zero warnings. |
-| `/newproject [name]` | Scaffold a new research project with standard folder structure and CLAUDE.md |
+| `/newproject [name]` | Scaffold a new research project with standard folder structure and CLAUDE.md. Also available as a [skill](skills/newproject/). |
 
 ### 6. CLAUDE.md Template
 
@@ -150,17 +150,21 @@ MixtapeTools/
 ├── workflow.md               # How I use Claude Code for research (START HERE)
 ├── skills/                   # Human-readable guide to Claude Code skills
 │   ├── README.md            # What skills are, how to use them, how to install
-│   └── split-pdf/           # Documentation and examples for the split-pdf skill
-│       └── README.md        # Detailed guide with methodology and examples
+│   ├── split-pdf/           # Documentation and examples for the split-pdf skill
+│   │   └── README.md        # Detailed guide with methodology and examples
+│   └── newproject/          # Documentation for the new-project scaffold skill
+│       └── README.md        # Philosophy, folder purposes, installation
 ├── .claude/
 │   ├── commands/             # Slash commands (invoke with /command-name)
 │   │   ├── compiledeck.md   # /compiledeck — Beamer presentations with Rhetoric of Decks
 │   │   ├── compiletex.md    # /compiletex — Compile LaTeX, report errors/warnings
 │   │   └── newproject.md    # /newproject — Scaffold new research project
 │   └── skills/
-│       └── split-pdf/        # Skill: download, split, and deep-read PDFs
-│           ├── SKILL.md     # Instructions Claude follows
-│           └── methodology.md # Why this method works (for humans)
+│       ├── split-pdf/        # Skill: download, split, and deep-read PDFs
+│       │   ├── SKILL.md     # Instructions Claude follows
+│       │   └── methodology.md # Why this method works (for humans)
+│       └── newproject/       # Skill: scaffold new research projects
+│           └── SKILL.md     # Instructions Claude follows
 ├── claude/                   # Templates for working with Claude
 │   ├── CLAUDE.md            # Project context template (copy to your projects)
 │   └── README.md

@@ -15,6 +15,7 @@ This directory contains documentation, methodology, and example output for the s
 | Skill | Command | What it does |
 |-------|---------|--------------|
 | [**Split-PDF**](split-pdf/) | `/split-pdf` | You give Claude a paper (a local file or a search query like "Gentzkow Shapiro 2014 competition newspapers"). It finds and downloads the PDF, saves it locally, splits it into small chunks, reads them carefully in batches, and writes detailed structured notes — extracting research questions, methods, data sources, findings, and more. The original PDF is always preserved. [See the full walkthrough with example output →](split-pdf/) |
+| [**New Project**](newproject/) | `/newproject` | Scaffolds a new research project with a standard directory structure — `code/`, `data/raw/`, `data/clean/`, `output/`, `documents/`, `decks/`, `notes/`, and `progress_logs/`. Copies a CLAUDE.md template for persistent AI context, generates a documented README, and creates an initial progress log for session continuity. [See documentation →](newproject/) |
 
 ---
 
@@ -51,13 +52,17 @@ Each skill is a markdown file at `.claude/skills/<name>/SKILL.md`. It has a smal
 
 ```
 .claude/skills/
-└── split-pdf/
-    ├── SKILL.md           # The instructions Claude follows
-    └── methodology.md     # Why this approach works (for humans)
+├── split-pdf/
+│   ├── SKILL.md           # The instructions Claude follows
+│   └── methodology.md     # Why this approach works (for humans)
+└── newproject/
+    └── SKILL.md           # The instructions Claude follows
 
 skills/
-└── split-pdf/
-    └── README.md          # Full documentation and examples (for humans)
+├── split-pdf/
+│   └── README.md          # Full documentation and examples (for humans)
+└── newproject/
+    └── README.md          # Philosophy, folder purposes, installation (for humans)
 ```
 
 If you're curious what the actual instructions look like, you can read the [SKILL.md file directly](../.claude/skills/split-pdf/SKILL.md) — but you don't need to understand it to use the skill.
