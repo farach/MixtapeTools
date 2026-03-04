@@ -1,6 +1,6 @@
-# TikZ Anti-Collision Rules
+# TikZ & Figure Anti-Collision Rules
 
-These rules prevent TikZ rendering errors — text on top of arrows, arrows crossing arrows, labels spilling over boxes. The compiler catches none of these. You must catch them yourself.
+These rules prevent rendering errors — text on top of arrows, arrows crossing arrows, labels spilling over boxes. The compiler catches none of these. You must catch them yourself. **These rules apply to BOTH TikZ diagrams AND matplotlib/Python figures.**
 
 ---
 
@@ -106,7 +106,84 @@ Horizontal arrows: `above` or `below`.
 Vertical arrows: `left` or `right`.
 Diagonal: whichever side has more space.
 
-### Pass 4: Everything else
+### Pass 4: Labels vs. drawn shapes (the Boundary Rule)
+
+**Problem this solves**: Text placed at hardcoded coordinates that collide with the edge of a circle, rectangle, or filled region. The compiler gives zero warnings for these — they only show up visually.
+
+**The rule**: Every label placed near a drawn geometric shape must have its coordinate verified against the shape's computed boundary. Never place text at a coordinate chosen for aesthetic alignment (e.g., "same y-height as another label") without checking whether that coordinate clears the shape it's near.
+
+**For circles**: `\draw (cx, cy) circle (r);` → boundary extends from `cy - r` to `cy + r`. Any label must be at least **0.4cm** outside the boundary (if external) or at least **0.4cm** inside (if internal).
+
+```
+% WRONG — label at y=2.0 sits exactly on boundary of circle with center (4, 0.5) radius 1.5
+\draw (4, 0.5) circle (1.5cm);  % top edge at y = 0.5 + 1.5 = 2.0
+\node at (4, 2.0) {Sample};     % COLLISION: y = top edge
+
+% RIGHT — label 0.4cm above the top edge
+\node at (4, 2.4) {Sample};     % 2.0 + 0.4 = 2.4 ✓
+```
+
+**For rectangles / FancyBboxPatch**: bottom-left `(x, y)` with width `w` and height `h` → top edge at `y + h`. Same 0.4cm clearance rule.
+
+**Critical corollary — don't match y-coordinates across different shapes**: If two shapes have different sizes, a single y-coordinate that's safe for one may collide with the other. Always compute boundaries independently for each shape.
+
+**For matplotlib/Python figures**: The same principle applies. When positioning `ax.text()` calls near `FancyBboxPatch` or `Circle` objects, compute the patch boundary and verify clearance. Text with `va='center'` extends roughly half its font height above and below the anchor — account for this.
+
+**Sub-rule: Bézier-first for matplotlib arrows (the arc3 formula).** The TikZ Bézier workflow (Pass 1) has an exact equivalent for matplotlib's `arc3` connectionstyle. You MUST compute curve positions before placing labels — the same "Claude cannot eyeball where a curve passes" rule applies to Python figures.
+
+**Matplotlib arc3 control point formula:**
+```python
+# For ax.annotate with connectionstyle='arc3,rad=R':
+# Start: (x1, y1), End: (x2, y2)
+dx, dy = x2 - x1, y2 - y1
+cx = (x1 + x2) / 2 + R * dy     # control point x
+cy = (y1 + y2) / 2 - R * dx     # control point y
+```
+
+**To find where the curve passes at any x-coordinate**, use the quadratic Bézier formula:
+```python
+B(t) = (1-t)²·P0 + 2(1-t)t·P1 + t²·P2,  t ∈ [0,1]
+```
+Solve for t at the desired x, then compute y(t). Use numerical sampling if needed.
+
+**Labeling arrows in matplotlib:** Once you know the curve's y-position at the label's x-coordinate, offset the label perpendicular to the curve with a white-background bbox:
+```python
+# Compute where curve passes at gap midpoint
+cx, cy = arc3_control_point(x1, y1, x2, y2, rad)
+t_mid = find_t_for_x(gap_mid_x, x1, cx, x2)
+curve_y = bezier_y_at_t(t_mid, y1, cy, y2)
+
+# Place label ABOVE the computed curve position
+ax.text(gap_mid_x, curve_y + 0.35, label, ha='center', va='bottom',
+        bbox=dict(facecolor='white', edgecolor='none', alpha=0.8, pad=1))
+```
+
+**Label offset direction:**
+- Arrow curves upward → label above (`va='bottom'`)
+- Arrow curves downward → label below (`va='top'`)
+- Arrow is straight → label above (`va='bottom'`)
+
+**Never guess arrow positions.** Every attempt to place labels by visual intuition or simple offsets from endpoints will fail. The formula is the only reliable method — just as in TikZ.
+
+**Sub-rule: Anchor-based centering of text pairs.** When multiple text elements (title + math, header + body) are placed inside a single container, do NOT use `va='center'` for both at symmetric y-offsets — this fails because multi-line text extends further from its anchor than single-line text, creating visual asymmetry even when coordinates are symmetric.
+
+Instead, **anchor both elements outward from the container's center**:
+- Upper element: `va='bottom'` at `center_y + small_gap` (text grows upward)
+- Lower element: `va='top'` at `center_y - small_gap` (text grows downward)
+
+This ensures true visual centering regardless of how many lines each element has.
+
+```python
+# WRONG — symmetric coordinates but visually asymmetric
+title_y = box_mid_y + 0.7   # 2-line title with va='center' → top-heavy
+math_y  = box_mid_y - 0.7   # 1-line math with va='center' → too low
+
+# RIGHT — anchor-based, text grows outward from center
+ax.text(x, box_mid_y + 0.15, 'Title\nLine 2', va='bottom', ...)  # grows UP
+ax.text(x, box_mid_y - 0.15, r'$math$',       va='top', ...)     # grows DOWN
+```
+
+### Pass 5: Everything else
 
 - Multi-line nodes have `align=center`?
 - No nodes clipped by slide edges (0.5cm margin)?
@@ -114,7 +191,7 @@ Diagonal: whichever side has more space.
 - Arrow colors and stealth sizes consistent?
 - No two labels overlap?
 
-### Pass 5: Open the PDF and visually confirm
+### Pass 6: Open the PDF and visually confirm
 
 ---
 
@@ -180,3 +257,41 @@ After ANY TikZ fix, re-audit EVERY TikZ figure in the deck. The same error patte
 4. **Node near slide edge**: Text extends past boundary. Fix: explicit `text width`, 0.5cm margin.
 5. **Return arrow crossing vertical branch**: Curve passes through another arrow. Fix: bend the other direction.
 6. **Label in curved arrow's path**: Label placed "below" the baseline but inside the curve's sweep. Fix: use the depth formula, add 0.5cm safety margin.
+
+---
+
+## Matplotlib Bézier Helper Functions (Copy-Paste Template)
+
+When generating ANY Python/matplotlib figure with curved arrows (`arc3`), include these helper functions at the top of the script. They compute exact curve positions so labels can be placed with precision.
+
+```python
+import numpy as np
+
+def arc3_control_point(x1, y1, x2, y2, rad):
+    """Compute the quadratic Bézier control point for matplotlib's arc3 connectionstyle.
+    Formula from matplotlib source: cx = mid_x + rad*dy, cy = mid_y - rad*dx
+    """
+    dx, dy = x2 - x1, y2 - y1
+    cx = (x1 + x2) / 2 + rad * dy
+    cy = (y1 + y2) / 2 - rad * dx
+    return cx, cy
+
+def find_t_for_x(target_x, x1, cx, x2, num_samples=1000):
+    """Find the Bézier parameter t where x(t) ≈ target_x."""
+    ts = np.linspace(0, 1, num_samples)
+    xs = (1 - ts)**2 * x1 + 2 * (1 - ts) * ts * cx + ts**2 * x2
+    return ts[np.argmin(np.abs(xs - target_x))]
+
+def bezier_y_at_t(t, y1, cy, y2):
+    """Y-coordinate of quadratic Bézier at parameter t."""
+    return (1 - t)**2 * y1 + 2 * (1 - t) * t * cy + t**2 * y2
+
+# Usage: Label an arc3 arrow at the midpoint of the gap
+# cx, cy = arc3_control_point(start_x, start_y, end_x, end_y, rad)
+# t_mid = find_t_for_x(gap_mid_x, start_x, cx, end_x)
+# curve_y = bezier_y_at_t(t_mid, start_y, cy, end_y)
+# ax.text(gap_mid_x, curve_y + 0.35, label, ha='center', va='bottom',
+#         bbox=dict(facecolor='white', edgecolor='none', alpha=0.8, pad=1))
+```
+
+**When to use:** Every time a matplotlib figure has `connectionstyle='arc3'` AND labels near those arrows. For straight arrows (`rad=0`), the curve position is just linear interpolation — but still compute it, don't guess.

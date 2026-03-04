@@ -285,6 +285,10 @@ When a deck needs data visualizations:
 3. Save figures as PDF (vector, not raster) to a `figures/` subdirectory
 4. Every figure: one message, direct labels, title states the finding
 5. Match the deck's background color in `fig.set_facecolor()`
+6. **Save the script** alongside the figures — never generate a figure without preserving the code that created it
+7. **Boundary Rule applies to figures too**: When placing `ax.text()` near patches (`FancyBboxPatch`, `Circle`, `Rectangle`), compute the patch boundary and verify text has ≥0.4cm clearance. See `tikz_rules.md` Pass 4.
+8. **Anchor-Based Centering Rule**: When a container holds multiple text elements (title + math), do NOT use `va='center'` for both at symmetric offsets — multi-line text extends further from its anchor than single-line, creating visual asymmetry. Instead, **anchor outward from center**: upper element uses `va='bottom'` at `center + gap`, lower uses `va='top'` at `center - gap`. See `tikz_rules.md` Pass 4.
+9. **Bézier-first for matplotlib arrows**: When labeling curved arrows (`arc3`), compute the actual Bézier curve position using the arc3 control point formula (`cx = mid_x + rad*dy, cy = mid_y - rad*dx`), then offset labels perpendicular to the **computed** curve position. Never guess where curves pass. Use a white-background bbox on labels for readability. See `tikz_rules.md` Pass 4 for the full formula and workflow.
 
 ---
 
