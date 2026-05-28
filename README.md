@@ -1,6 +1,6 @@
 # MixtapeTools
 
-> Tools for coding, teaching, and presentations with AI assistance.
+> Tools for empirical economics research with Claude Code — audit protocols, presentation systems, PDF workflows, and a research GTD harness.
 
 ---
 
@@ -11,6 +11,7 @@ This is a collection of tools, templates, and philosophies I've developed while 
 - **Coding** (data analysis scripts, replication code, automation)
 - **Teaching** (course materials, lecture decks, pedagogical tools)
 - **Presentations** (Beamer decks, slides for talks and seminars)
+- **Research management** (hypothesis tracking, evidence courtroom, live dashboards)
 
 As I develop new approaches, I'll add them here. Anyone is free to use them.
 
@@ -42,7 +43,7 @@ If your taste runs toward highly automated pipelines, or toward AI that never ta
 
 **Location:** [`workflow.md`](workflow.md) | **Deck:** [`presentations/examples/workflow_deck/`](presentations/examples/workflow_deck/)
 
-Before diving into specific tools, read my workflow document. It explains **how I think about using Claude Code for empirical research**—not just the tools, but the philosophy behind them.
+Before diving into specific tools, read my workflow document. It explains **how I think about using Claude Code for empirical research** — not just the tools, but the philosophy behind them.
 
 **Key concepts:**
 
@@ -134,7 +135,7 @@ Blindspot doesn't need separation because it's auditing *perception* — your ow
 
 ---
 
-### 2c. Bibcheck (Many-Agent Bibliography Audit)
+### 3. Bibcheck (Many-Agent Bibliography Audit)
 
 **Location:** [`skills/bibcheck/`](skills/bibcheck/) | `.claude/skills/bibcheck/SKILL.md` (actual skill)
 
@@ -159,7 +160,7 @@ Read the full documentation: [`skills/bibcheck/README.md`](skills/bibcheck/READM
 
 ---
 
-### 3. The Rhetoric of Decks
+### 4. The Rhetoric of Decks
 
 **Location:** `presentations/`
 
@@ -169,9 +170,11 @@ My philosophy of slide design, plus a tested prompt for generating Beamer presen
 - Beauty earns attention; attention enables communication
 - Titles are assertions, not labels
 - One idea per slide
-- Bullets are defeat—find the structure hiding in your list
+- Bullets are defeat — find the structure hiding in your list
 
-### 3. Split-PDF Skill (Download, Split, and Deep-Read Papers)
+---
+
+### 5. Split-PDF Skill (Download, Split, and Deep-Read Papers)
 
 **Location:** [`skills/split-pdf/`](skills/split-pdf/) (human-readable guide) | `.claude/skills/split-pdf/SKILL.md` (actual skill)
 
@@ -192,7 +195,9 @@ A Claude Code **skill** — an invocable `/split-pdf` command that automates the
 
 Read the full documentation: [`skills/split-pdf/README.md`](skills/split-pdf/README.md)
 
-### 3b. Beautiful Deck (End-to-End Deck Creation)
+---
+
+### 5b. Beautiful Deck (End-to-End Deck Creation)
 
 **Location:** [`skills/beautiful_deck/`](skills/beautiful_deck/) | `.claude/skills/beautiful_deck/SKILL.md` (actual skill)
 
@@ -212,7 +217,9 @@ A Claude Code **skill** — invoke with `/beautiful_deck` — that runs the full
 
 **Usage:** `/beautiful_deck [optional content path or description]`
 
-### 4. Compile Deck (Beamer Presentations with the Rhetoric of Decks)
+---
+
+### 6. Compile Deck (Beamer Presentations with the Rhetoric of Decks)
 
 **Location:** `.claude/commands/compiledeck.md`
 
@@ -228,10 +235,6 @@ A Claude Code **command** — invoke with `/compiledeck` — that embeds the ful
    - **Professional/Academic** — your consistent "house style" for outward-facing work
    - **Colorful/Expressive** — unique, creative design each time
 
-**Why separate these?** External presentations need polish and restraint. Working decks can be messier—they're thinking tools. Some people want the same style for both; others want creative freedom internally while maintaining a professional brand externally.
-
-**House style:** Define your preferred "Professional/Academic" palette in your CLAUDE.md. The skill checks for it. If none is defined, it uses a sensible default.
-
 **What's embedded:**
 - The Three Laws (Beauty is Function, Cognitive Load is Enemy, Slide Serves Spoken Word)
 - Titles as assertions, not labels
@@ -241,7 +244,9 @@ A Claude Code **command** — invoke with `/compiledeck` — that embeds the ful
 
 **Usage:** Type `/compiledeck` when creating or editing a Beamer deck.
 
-### 5. TikZ Collision Audit
+---
+
+### 7. TikZ Collision Audit
 
 **Location:** [`skills/tikz/`](skills/tikz/) | `.claude/skills/tikz/SKILL.md` (actual skill)
 
@@ -266,7 +271,9 @@ A Claude Code **skill** — invoke with `/tikz path/to/file.tex` — that system
 
 **Usage:** `/tikz path/to/deck.tex`
 
-### 6. Additional Commands
+---
+
+### 8. Additional Commands
 
 **Location:** `.claude/commands/`
 
@@ -276,11 +283,33 @@ A Claude Code **skill** — invoke with `/tikz path/to/file.tex` — that system
 | `/newproject [name]` | Scaffold a new research project with standard folder structure and CLAUDE.md. Also available as a [skill](skills/newproject/). |
 | `/newbook [slug]` | Scaffold a book-shaped project: `memoir`-based LaTeX skeleton, Palatino body, Gov 2001 palette, voiced-sidebar callouts, one chapter per file, bibliography stub, CLAUDE.md with voice cast. Parallel to `/newproject`. [See documentation](skills/newbook/). |
 
-### 6. CLAUDE.md Template
+---
+
+### 9. CLAUDE.md Template
 
 **Location:** `claude/CLAUDE.md`
 
 A template for giving Claude persistent memory within a project. Copy it to your project root and fill in the specifics. Claude Code will automatically read it every session.
+
+---
+
+### 10. GTD Research Harness *(work in progress)*
+
+**Location:** [`gtd/`](gtd/)
+
+A warrant-first GTD system for conducting empirical research with an AI thinking partner. Makes research dialogue **recoverable**, claims **falsifiable**, and the current state of knowledge **always visible**.
+
+The system has three components:
+
+- **The protocol** — how to file hypotheses, insights, and decisions so they accumulate into a coherent knowledge base rather than a pile of chat history
+- **The dashboard** — a live Python server (`gtd/templates/dashboard_server.py`) that reads the filesystem on every request and renders: a re-entry page, narrative with drift detection, a five-stage evidence courtroom, pipeline freshness tracking, hypothesis DAG, and referee report viewer
+- **The interrogation** — a structured prompt (`gtd/INTERROGATION.md`) for periodic reviews that stress-test whether the narrative is actually earned
+
+**Core idea:** Every claim must have a warrant. Every warrant must have a falsification test. Every falsification test must be filed as an insight. The courtroom tab enforces this by requiring evidence at all five stages before a claim can appear in the narrative or manuscript.
+
+**Status:** Under active development through use on a live R&R project. Stable enough to copy and adapt; not stable enough to treat as finished.
+
+Read: [`gtd/README.md`](gtd/README.md) | Dashboard template: [`gtd/templates/dashboard_server.py`](gtd/templates/dashboard_server.py)
 
 ---
 
@@ -290,41 +319,38 @@ A template for giving Claude persistent memory within a project. Copy it to your
 MixtapeTools/
 ├── README.md                 # You are here
 ├── workflow.md               # How I use Claude Code for research (START HERE)
+├── gtd/                      # GTD research harness (work in progress)
+│   ├── README.md            # Full protocol documentation
+│   ├── INTERROGATION.md     # Periodic review prompt
+│   ├── SKILL.md             # Claude Code skill definition
+│   ├── workflow.md          # GTD-specific workflow
+│   ├── docs/                # Design rationale and tab-by-tab guide
+│   ├── examples/            # Example hypothesis/insight/decision files
+│   └── templates/           # Dashboard server + static dashboard
 ├── skills/                   # Human-readable guides to Claude Code skills
 │   ├── README.md            # What skills are, how to use them, how to install
 │   ├── blindspot/           # Blindspot: peripheral vision audit for output
-│   │   └── README.md        # Full essay, origin story, six steps
-│   ├── split-pdf/           # Documentation and examples for the split-pdf skill
-│   │   └── README.md        # Detailed guide with methodology and examples
-│   ├── newproject/          # Documentation for the new-project scaffold skill
-│   └── tikz/                # Documentation for the TikZ collision audit skill
-│       └── README.md        # Philosophy, folder purposes, installation
+│   ├── split-pdf/           # Split-PDF: deep-read academic papers
+│   ├── newproject/          # Newproject: scaffold new research projects
+│   └── tikz/                # TikZ: collision audit for LaTeX figures
 ├── .claude/
 │   ├── commands/             # Slash commands (invoke with /command-name)
-│   │   ├── compiledeck.md   # /compiledeck — Beamer presentations with Rhetoric of Decks
-│   │   ├── compiletex.md    # /compiletex — Compile LaTeX, report errors/warnings
+│   │   ├── compiledeck.md   # /compiledeck — Beamer with Rhetoric of Decks
+│   │   ├── compiletex.md    # /compiletex — Compile LaTeX, report warnings
 │   │   └── newproject.md    # /newproject — Scaffold new research project
 │   └── skills/
 │       ├── blindspot/        # Skill: make the stone stony again
-│       │   └── SKILL.md     # Instructions Claude follows (invoke with /blindspot)
 │       ├── tikz/             # Skill: audit and fix TikZ visual collisions
-│       │   └── SKILL.md     # Instructions Claude follows (invoke with /tikz)
 │       ├── split-pdf/        # Skill: download, split, and deep-read PDFs
-│       │   ├── SKILL.md     # Instructions Claude follows
-│       │   └── methodology.md # Why this method works (for humans)
 │       └── newproject/       # Skill: scaffold new research projects
-│           └── SKILL.md     # Instructions Claude follows
 ├── claude/                   # Templates for working with Claude
-│   ├── CLAUDE.md            # Project context template (copy to your projects)
-│   └── README.md
+│   └── CLAUDE.md            # Project context template (copy to your projects)
 ├── personas/                 # Systematic audit & replication protocols
-│   ├── referee2.md          # The 5-audit protocol for empirical research
-│   └── README.md
+│   └── referee2.md          # The 5-audit protocol for empirical research
 └── presentations/            # Everything about slide decks
     ├── rhetoric_of_decks.md           # Practical principles (condensed)
     ├── rhetoric_of_decks_full_essay.md # Full intellectual framework (600+ lines)
     ├── deck_generation_prompt.md      # The prompt + iterative workflow
-    ├── README.md
     └── examples/
         ├── workflow_deck/             # Visual presentation of the workflow
         ├── rhetoric_of_decks/         # The philosophy deck (45 slides)
@@ -437,4 +463,4 @@ Use freely. Attribution appreciated but not required.
 
 ---
 
-*Last updated: March 2026*
+*Last updated: May 2026*
