@@ -1,0 +1,232 @@
+{
+  "summary": {
+    "hypothesis_counts": {
+      "confirmed": 1,
+      "testing": 2
+    },
+    "total_hypotheses": 3,
+    "total_insights": 2,
+    "pipeline_stale": 1,
+    "pipeline_total": 8,
+    "generated_at": "2026-04-15 16:30:00"
+  },
+  "hypotheses": [
+    {
+      "id": "H01",
+      "title": "Free tutoring increases attendance",
+      "status": "testing",
+      "parent": null,
+      "children": ["H01a", "H01b"],
+      "claim": "Districts that adopted the free after-school tutoring program experienced increased daily attendance rates, identified by staggered rollout timing.",
+      "kills_it": "Pre-trends not parallel; placebo significant; effect disappears with controls",
+      "file": "hypotheses/H01_tutoring_attendance.md"
+    },
+    {
+      "id": "H01a",
+      "title": "Urban districts respond to tutoring",
+      "status": "confirmed",
+      "parent": "H01",
+      "children": [],
+      "claim": "Urban districts (RUCC 1-3) experienced a 2-4pp attendance increase.",
+      "kills_it": "Pre-trends diverge; placebo period shows similar effect",
+      "file": "hypotheses/H01a_urban_response.md"
+    },
+    {
+      "id": "H01b",
+      "title": "Rural districts respond to tutoring",
+      "status": "testing",
+      "parent": "H01",
+      "children": [],
+      "claim": "Rural districts (RUCC 7-9) experienced an attendance increase.",
+      "kills_it": "Pre-trends not parallel; insufficient power (N < 30)",
+      "file": "hypotheses/H01b_rural_null.md"
+    }
+  ],
+  "insights": [
+    {
+      "date": "2026-04-15",
+      "title": "Placebo ATT is null — falsification passes",
+      "updates": "H01a",
+      "result": "confirmed",
+      "script": "scripts/r/07_falsification.R",
+      "figure": "output/figures/placebo_event_study.pdf",
+      "finding": "Placebo ATT = 0.1pp (p = 0.87). Design does not produce false positives.",
+      "file": "insights/2026-04-15_placebo_null.md"
+    },
+    {
+      "date": "2026-04-10",
+      "title": "Urban ATT is 2.3pp",
+      "updates": "H01a",
+      "result": "confirmed",
+      "script": "scripts/r/05_estimate_did.R",
+      "figure": "output/figures/urban_event_study.pdf",
+      "finding": "ATT = 2.3pp (SE = 0.8, p = 0.004). Stable across event-study leads.",
+      "file": "insights/2026-04-10_urban_att.md"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D01",
+      "decision": "Primary estimator is TWFE with district and week FE",
+      "date": "2026-04-01",
+      "rationale": "Sufficient pre-periods; no staggered-timing bias"
+    },
+    {
+      "id": "D02",
+      "decision": "Cluster standard errors at the district level",
+      "date": "2026-04-01",
+      "rationale": "Treatment assigned at district level; within-district serial correlation"
+    },
+    {
+      "id": "D03",
+      "decision": "Treatment date = January 13, 2026",
+      "date": "2026-04-01",
+      "rationale": "Program began on first day of spring semester"
+    },
+    {
+      "id": "D04",
+      "decision": "Urban = RUCC 1-3; Rural = RUCC 7-9; Exclude RUCC 4-6",
+      "date": "2026-04-05",
+      "rationale": "Clean separation; mirrors USDA classification"
+    }
+  ],
+  "pipeline": [
+    {
+      "script": "scripts/python/00_clean_attendance.py",
+      "name": "Clean Attendance",
+      "level": 1,
+      "exists": true,
+      "script_mtime": "2026-03-28 09:15",
+      "outputs": [{"path": "data/clean/attendance_panel.csv", "exists": true, "mtime": "2026-03-28 09:20", "fresh": true}],
+      "all_fresh": true
+    },
+    {
+      "script": "scripts/python/01_clean_demographics.py",
+      "name": "Clean Demographics",
+      "level": 1,
+      "exists": true,
+      "script_mtime": "2026-03-28 10:00",
+      "outputs": [{"path": "data/clean/district_demographics.csv", "exists": true, "mtime": "2026-03-28 10:05", "fresh": true}],
+      "all_fresh": true
+    },
+    {
+      "script": "scripts/python/02_build_panel.py",
+      "name": "Build Panel",
+      "level": 2,
+      "exists": true,
+      "script_mtime": "2026-04-02 14:00",
+      "outputs": [{"path": "data/derived/analysis_panel.csv", "exists": true, "mtime": "2026-04-02 14:10", "fresh": true}],
+      "all_fresh": true
+    },
+    {
+      "script": "scripts/python/03_classify_treated.py",
+      "name": "Classify Treatment",
+      "level": 3,
+      "exists": true,
+      "script_mtime": "2026-04-05 11:00",
+      "outputs": [{"path": "data/derived/treatment_assignment.csv", "exists": true, "mtime": "2026-04-05 11:05", "fresh": true}],
+      "all_fresh": true
+    },
+    {
+      "script": "scripts/r/04_descriptive_figures.R",
+      "name": "Descriptive Figures",
+      "level": 4,
+      "exists": true,
+      "script_mtime": "2026-04-06 15:00",
+      "outputs": [{"path": "output/figures/enrollment_map.pdf", "exists": true, "mtime": "2026-04-06 15:30", "fresh": true}],
+      "all_fresh": true
+    },
+    {
+      "script": "scripts/r/05_estimate_did.R",
+      "name": "Urban DiD Estimation",
+      "level": 5,
+      "exists": true,
+      "script_mtime": "2026-04-10 08:00",
+      "outputs": [{"path": "output/figures/urban_event_study.pdf", "exists": true, "mtime": "2026-04-10 08:45", "fresh": true}],
+      "all_fresh": true
+    },
+    {
+      "script": "scripts/r/06_estimate_rural.R",
+      "name": "Rural DiD Estimation",
+      "level": 5,
+      "exists": true,
+      "script_mtime": "2026-04-12 09:00",
+      "outputs": [{"path": "output/figures/rural_event_study.pdf", "exists": false, "mtime": null, "fresh": false}],
+      "all_fresh": false
+    },
+    {
+      "script": "scripts/r/07_falsification.R",
+      "name": "Falsification Test",
+      "level": 5,
+      "exists": true,
+      "script_mtime": "2026-04-14 10:00",
+      "outputs": [{"path": "output/figures/placebo_event_study.pdf", "exists": true, "mtime": "2026-04-15 16:00", "fresh": true}],
+      "all_fresh": true
+    }
+  ],
+  "figures": [
+    {
+      "name": "enrollment_map",
+      "path": "output/figures/enrollment_map.pdf",
+      "mtime": "2026-04-06 15:30",
+      "script": "scripts/r/04_descriptive_figures.R",
+      "fresh": true,
+      "orphaned": false
+    },
+    {
+      "name": "urban_event_study",
+      "path": "output/figures/urban_event_study.pdf",
+      "mtime": "2026-04-10 08:45",
+      "script": "scripts/r/05_estimate_did.R",
+      "fresh": true,
+      "orphaned": false
+    },
+    {
+      "name": "placebo_event_study",
+      "path": "output/figures/placebo_event_study.pdf",
+      "mtime": "2026-04-15 16:00",
+      "script": "scripts/r/07_falsification.R",
+      "fresh": true,
+      "orphaned": false
+    }
+  ],
+  "courtroom": {
+    "stages": [
+      {
+        "id": 1,
+        "name": "Show Bite",
+        "status": "confirmed",
+        "summary": "Program launch documented via state education department records. 67 districts adopted in January 2026. Geographic spread across 12 states.",
+        "evidence": ["output/figures/enrollment_map.pdf"]
+      },
+      {
+        "id": 2,
+        "name": "Event Studies",
+        "status": "confirmed",
+        "summary": "Clean zero pre-trends (6 leads all within [-0.3, 0.4]pp). Effect onset at lead 0, stable through lead 4.",
+        "evidence": ["output/figures/urban_event_study.pdf"]
+      },
+      {
+        "id": 3,
+        "name": "Falsification",
+        "status": "confirmed",
+        "summary": "Placebo ATT = 0.1pp (p = 0.87). Same specification in Fall 2025 yields null.",
+        "evidence": ["output/figures/placebo_event_study.pdf"]
+      },
+      {
+        "id": 4,
+        "name": "Main Results",
+        "status": "confirmed",
+        "summary": "ATT = 2.3pp (SE = 0.8, p = 0.004). Robust to alternative specifications.",
+        "evidence": ["output/figures/urban_event_study.pdf"]
+      },
+      {
+        "id": 5,
+        "name": "Mechanisms",
+        "status": "missing",
+        "summary": null,
+        "evidence": []
+      }
+    ]
+  }
+}
